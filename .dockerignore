@@ -1,0 +1,5 @@
+.idea
+models
+docker/models
+input_images
+output_images

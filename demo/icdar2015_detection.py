@@ -51,8 +51,7 @@ def get_parser():
 
     parser.add_argument(
         "--input",
-        default="./input_images/*.jpg",
-        nargs="+",
+        default="./input_images",
         help="the folder of icdar2015 test images"
     )
 
@@ -119,16 +118,17 @@ if __name__ == "__main__":
     cfg = setup_cfg(args)
     detection_demo = VisualizationDemo(cfg)
 
-    test_images_path = args.input
+    test_images_path = os.path.abspath(args.input)
     output_path = args.output
 
     start_time_all = time.time()
     img_count = 0
-    for i in glob.glob(test_images_path):
-        print(i)
-        img_name = os.path.basename(i)
-        img_save_path = output_path + img_name.split('.')[0] + '.jpg'
-        img = cv2.imread(i)
+    print(f"Looking for images under {test_images_path}")
+    for image_path in glob.glob(os.path.join(test_images_path, "*.jpg")):
+        print(image_path)
+        img_name = os.path.basename(image_path)
+        img_save_path = os.path.join(output_path, img_name.split('.')[0] + '.jpg')
+        img = cv2.imread(image_path)
         start_time = time.time()
 
         prediction, vis_output, polygons = detection_demo.run_on_image(img)
@@ -139,6 +139,8 @@ if __name__ == "__main__":
         print("Time: {:.2f} s / img".format(time.time() - start_time))
         vis_output.save(img_save_path)
         img_count += 1
+    if img_count == 0:
+        raise FileNotFoundError("Found no image")
     print("Average Time: {:.2f} s /img".format((time.time() - start_time_all) / img_count))
 
 

@@ -24,7 +24,8 @@ _C.MODEL.LOAD_PROPOSALS = False
 _C.MODEL.MASK_ON = False
 _C.MODEL.KEYPOINT_ON = False
 _C.MODEL.TEXTFUSENET_MUTIL_PATH_FUSE_ON = False
-_C.MODEL.DEVICE = "cuda"
+import torch
+_C.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 _C.MODEL.META_ARCHITECTURE = "GeneralizedRCNN"
 
 
